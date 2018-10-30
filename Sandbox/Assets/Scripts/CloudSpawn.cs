@@ -53,21 +53,25 @@ public class CloudSpawn : MonoBehaviour
     {
         Debug.Log("initial cloud transform position. " + initialPosition);
 
-       
-            //demo_cloud.CompareTag()
+
+        //demo_cloud.CompareTag()
+        if (oldCloud != null)
+        {
             if (oldCloud.transform.position.x > -2.5f)
             {
                 SpawnCloud();
             }
-            foreach(GameObject a_cloud in cloud_queue)
+        }
+            foreach (GameObject a_cloud in cloud_queue)
             {
                 if (a_cloud.transform.position.x > 8.0f)
                 {
-                //TODO: Remove clouds that are beyond the right side of the screen.
-                //RemoveCloud();
+                    //TODO: Remove clouds that are beyond the right side of the screen.
+                    //RemoveCloud();
+
                     
-                    //cloud_queue.Dequeue();
-                    //Destroy(a_cloud);
+                   oldCloud = cloud_queue.Dequeue();
+                   Destroy(a_cloud);
                 //cloud_list.Remove(a_cloud);
                 }
             }
