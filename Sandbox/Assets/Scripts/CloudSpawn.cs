@@ -72,6 +72,7 @@ public class CloudSpawn : MonoBehaviour
                     
                    oldCloud = cloud_queue.Dequeue();
                    Destroy(a_cloud);
+                    break;
                 //cloud_list.Remove(a_cloud);
                 }
             }
