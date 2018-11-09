@@ -5,94 +5,171 @@ using UnityEngine;
 //Local screen size: y: -10 to 10
 //x : from -5 to 5
 
-struct Cube
-{
 
-}
-struct Sphere
-{
-
-}
-struct Cloud
-{
-    //1 cube and 3 spheres
-    Cube cloud_block;
-    //Sphere[] cloud_circles = new Sphere[3]();
-}
 
 public class CloudSpawn : MonoBehaviour
 {
 
     public GameObject demo_cloud;
+    public float spawnBarrier;
+    public float destroyBarrier;
 
-    GameObject oldCloud;
+    GameObject newCloud;
+    GameObject deadCloud;
     Vector3 initialPosition;
     //List<GameObject> cloud_list;
     Queue<GameObject> cloud_queue;
-    bool test;
+    
+   
     float y_offset = 0;
 	// Use this for initialization
 	void Start ()
     {
+        //Debug.Log("Start called.\n");
 		if(demo_cloud != null)
         {
-            Debug.Log("demo cloud x: " + demo_cloud.transform.position.x);
-            initialPosition = demo_cloud.transform.position;
-            test = false;
+            //Debug.Log("demo cloud x: " + demo_cloud.transform.position.x);
+            initialPosition = demo_cloud.transform.position;           
         }
-        oldCloud = demo_cloud;
+        newCloud = demo_cloud;
         if (cloud_queue == null)
         {
+            //Debug.Log("cloud queue null\n");
             cloud_queue = new Queue<GameObject>();
-            cloud_queue.Enqueue(oldCloud);
+            cloud_queue.Enqueue(newCloud);
         }
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        Debug.Log("initial cloud transform position. " + initialPosition);
+        //Debug.Log("initial cloud transform position. " + initialPosition);
 
 
-        //demo_cloud.CompareTag()
-        if (oldCloud != null)
+        //IV) If the newest cloud's x position is beyond the spawn barrier, spawn new cloud.
+        if (newCloud != null)
         {
-            if (oldCloud.transform.position.x > -2.5f)
+            if (newCloud.transform.position.x > spawnBarrier)
             {
                 SpawnCloud();
             }
         }
-            foreach (GameObject a_cloud in cloud_queue)
-            {
-                if (a_cloud.transform.position.x > 8.0f)
-                {
-                    //TODO: Remove clouds that are beyond the right side of the screen.
-                    //RemoveCloud();
 
-                    
-                   oldCloud = cloud_queue.Dequeue();
-                   Destroy(a_cloud);
-                    break;
-                //cloud_list.Remove(a_cloud);
-                }
-            }
+        //V) If the first cloud in the queue (the oldest one available) is beyond the destroy barrier, dequeue and destroy that cloud.
+        if(cloud_queue.Peek().transform.position.x > destroyBarrier)
+        {
+            RemoveCloud();
+        }
         
 	}
 
     void SpawnCloud()
     {
         y_offset = Random.Range(-5.0f, 5.0f);
+        
+
         initialPosition.y = y_offset;
         //Spawn another cloud identical to the demo one
-        oldCloud = Instantiate(demo_cloud, initialPosition, Quaternion.identity);
-        cloud_queue.Enqueue(oldCloud);
-        Debug.Log("Spawned clone!");
+        newCloud = Instantiate(newCloud, initialPosition, Quaternion.identity);
+        newCloud.name = (newCloud.GetInstanceID()).ToString();
+        List<ChangeTransform> cloudShapes = new List<ChangeTransform>();
+
+        //Assign individual cloud shapes (3D gameobjects to list of cloudShapes.
+        //for (int i = 0; i < 4; i++)
+        //{
+        //    if (newCloud.transform.GetChild(i).gameObject.CompareTag("CloudShape"))
+        //    {
+        //        ChangeTransform test = (ChangeTransform)newCloud.transform.GetChild(i).gameObject;
+        //        (ChangeTransform)test
+        //    }
+        //}
+        Debug.Log("SpawnCloud");
+        //Try to change a 3D object's Scale when it is not a child of another gameobject.
+        GameObject[] testSphere = GameObject.FindGameObjectsWithTag("CloudShape");
+        if (testSphere == null)
+        {
+            Debug.Log("no game objects with the tag 'CloudShape' were found.");
+        }
+        else
+        {
+            if (testSphere.Length > 2)
+            {
+                //for the last three elements:
+                for (int increment = 1; increment <= 3; increment++)
+                {
+                    GameObject gameO = testSphere[testSphere.Length - increment];
+                    if (gameO.GetComponent<ChangeTransform>() != null)
+                    {
+                        Debug.Log("Change Scale.");
+                        float xScale = Random.Range(1.0f, 5.0f);
+                        float yScale = Random.Range(1.0f, 2.0f);
+
+                        //Debug.Log("ChangeTransform component found. Proceed with changing gameobject scale");
+                        ChangeTransform t = gameO.GetComponent<ChangeTransform>();
+                        t.ChangeScale(new Vector3(xScale, yScale, 1.0f));
+                    }
+                    //Only change last element
+                    //GameObject gameO = testSphere[testSphere.Length - 1];
+                    //if (gameO.GetComponent<ChangeTransform>() != null)
+                    //{
+                    //    float xScale = Random.Range(1.0f, 5.0f);
+                    //    float yScale = Random.Range(1.0f, 2.0f);
+
+                    //    //Debug.Log("ChangeTransform component found. Proceed with changing gameobject scale");
+                    //    ChangeTransform t = gameO.GetComponent<ChangeTransform>();
+                    //    t.ChangeScale(new Vector3(xScale, yScale, 1.0f));
+                    //}
+                    //changes the scale of all cloud shape elements
+                    //foreach (GameObject g in testSphere)
+                    //{
+                    //if (g.GetComponent<ChangeTransform>() != null)
+                    //{
+                    //    float xScale = Random.Range(1.0f, 5.0f);
+                    //    float yScale = Random.Range(1.0f, 5.0f);
+
+                    //    //Debug.Log("ChangeTransform component found. Proceed with changing gameobject scale");
+                    //    ChangeTransform t = g.GetComponent<ChangeTransform>();
+                    //    t.ChangeScale(new Vector3(xScale, yScale, 1.0f));
+                    //}
+                    //else
+                    //{
+                    //    Debug.Log("no 'ChangeTranform' components  were found.");
+                    //}
+                }
+            }
+
+        }
+
+        
+        
+
+        //Retrieve 3D GameObject scale transforms, change them
+        //foreach(GameObject shape in cloudShapes)
+        //{
+        //    //Unparent, scale, reparent
+        //    Transform oldParent = shape.transform.parent;
+        //    shape.transform.parent = null;
+        //    shape.transform.localScale.Set(2, 2, 2);
+        //    shape.transform.parent = oldParent;
+        //}
+        for(int j = 0; j < 4; j++)
+        {
+            
+        }
+        //shape1.scale = newCloud.GetComponentInChildren<GameObject>().transform.localScale;
+       // shape1.scale.x = 5;
+        //shape1.scale.y = 2;
+        //newCloud.GetComponentInChildren<GameObject>().transform.localScale.Set(shape1.scale.x, shape1.scale.y, 1);
+        //newCloud.transform..Set(xScale, yScale, 1);
+        cloud_queue.Enqueue(newCloud);
+        //Debug.Log("Spawned clone!");
     }
 
     void RemoveCloud()
     {
-        Debug.Log("Remove cloud.");
-        cloud_queue.Dequeue();
+        //Debug.Log("Remove cloud.");
+        deadCloud = cloud_queue.Dequeue();
+        Destroy(deadCloud);        
     }
    // MeshFilter Spheremesh = new MeshFilter();
     
