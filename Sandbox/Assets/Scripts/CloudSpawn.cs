@@ -13,6 +13,7 @@ public class CloudSpawn : MonoBehaviour
     public GameObject demo_cloud;
     public float spawnBarrier;
     public float destroyBarrier;
+    public int numberOfShapes;
 
     GameObject newCloud;
     GameObject deadCloud;
@@ -72,7 +73,7 @@ public class CloudSpawn : MonoBehaviour
         //Spawn another cloud identical to the demo one
         newCloud = Instantiate(newCloud, initialPosition, Quaternion.identity);
         newCloud.name = (newCloud.GetInstanceID()).ToString();
-        List<ChangeTransform> cloudShapes = new List<ChangeTransform>();
+        //List<ChangeTransform> cloudShapes = new List<ChangeTransform>();
 
         //Assign individual cloud shapes (3D gameobjects to list of cloudShapes.
         //for (int i = 0; i < 4; i++)
@@ -92,10 +93,10 @@ public class CloudSpawn : MonoBehaviour
         }
         else
         {
-            if (testSphere.Length > 2)
+            if (testSphere.Length > numberOfShapes)
             {
                 //for the last three elements:
-                for (int increment = 1; increment <= 3; increment++)
+                for (int increment = 1; increment <= numberOfShapes; increment++)
                 {
                     GameObject gameO = testSphere[testSphere.Length - increment];
                     if (gameO.GetComponent<ChangeTransform>() != null)
