@@ -73,17 +73,7 @@ public class CloudSpawn : MonoBehaviour
         //Spawn another cloud identical to the demo one
         newCloud = Instantiate(newCloud, initialPosition, Quaternion.identity);
         newCloud.name = (newCloud.GetInstanceID()).ToString();
-        //List<ChangeTransform> cloudShapes = new List<ChangeTransform>();
-
-        //Assign individual cloud shapes (3D gameobjects to list of cloudShapes.
-        //for (int i = 0; i < 4; i++)
-        //{
-        //    if (newCloud.transform.GetChild(i).gameObject.CompareTag("CloudShape"))
-        //    {
-        //        ChangeTransform test = (ChangeTransform)newCloud.transform.GetChild(i).gameObject;
-        //        (ChangeTransform)test
-        //    }
-        //}
+    
         Debug.Log("SpawnCloud");
         //Try to change a 3D object's Scale when it is not a child of another gameobject.
         GameObject[] testSphere = GameObject.FindGameObjectsWithTag("CloudShape");
@@ -104,64 +94,18 @@ public class CloudSpawn : MonoBehaviour
                         Debug.Log("Change Scale.");
                         float xScale = Random.Range(1.0f, 5.0f);
                         float yScale = Random.Range(1.0f, 2.0f);
+                        float zScale = Random.Range(1.0f, 2.0f);
 
                         //Debug.Log("ChangeTransform component found. Proceed with changing gameobject scale");
                         ChangeTransform t = gameO.GetComponent<ChangeTransform>();
-                        t.ChangeScale(new Vector3(xScale, yScale, 1.0f));
+                        t.ChangeScale(new Vector3(xScale, yScale, zScale));
                     }
-                    //Only change last element
-                    //GameObject gameO = testSphere[testSphere.Length - 1];
-                    //if (gameO.GetComponent<ChangeTransform>() != null)
-                    //{
-                    //    float xScale = Random.Range(1.0f, 5.0f);
-                    //    float yScale = Random.Range(1.0f, 2.0f);
-
-                    //    //Debug.Log("ChangeTransform component found. Proceed with changing gameobject scale");
-                    //    ChangeTransform t = gameO.GetComponent<ChangeTransform>();
-                    //    t.ChangeScale(new Vector3(xScale, yScale, 1.0f));
-                    //}
-                    //changes the scale of all cloud shape elements
-                    //foreach (GameObject g in testSphere)
-                    //{
-                    //if (g.GetComponent<ChangeTransform>() != null)
-                    //{
-                    //    float xScale = Random.Range(1.0f, 5.0f);
-                    //    float yScale = Random.Range(1.0f, 5.0f);
-
-                    //    //Debug.Log("ChangeTransform component found. Proceed with changing gameobject scale");
-                    //    ChangeTransform t = g.GetComponent<ChangeTransform>();
-                    //    t.ChangeScale(new Vector3(xScale, yScale, 1.0f));
-                    //}
-                    //else
-                    //{
-                    //    Debug.Log("no 'ChangeTranform' components  were found.");
-                    //}
+                
                 }
             }
 
         }
 
-        
-        
-
-        //Retrieve 3D GameObject scale transforms, change them
-        //foreach(GameObject shape in cloudShapes)
-        //{
-        //    //Unparent, scale, reparent
-        //    Transform oldParent = shape.transform.parent;
-        //    shape.transform.parent = null;
-        //    shape.transform.localScale.Set(2, 2, 2);
-        //    shape.transform.parent = oldParent;
-        //}
-        for(int j = 0; j < 4; j++)
-        {
-            
-        }
-        //shape1.scale = newCloud.GetComponentInChildren<GameObject>().transform.localScale;
-       // shape1.scale.x = 5;
-        //shape1.scale.y = 2;
-        //newCloud.GetComponentInChildren<GameObject>().transform.localScale.Set(shape1.scale.x, shape1.scale.y, 1);
-        //newCloud.transform..Set(xScale, yScale, 1);
         cloud_queue.Enqueue(newCloud);
         //Debug.Log("Spawned clone!");
     }
@@ -172,11 +116,5 @@ public class CloudSpawn : MonoBehaviour
         deadCloud = cloud_queue.Dequeue();
         Destroy(deadCloud);        
     }
-   // MeshFilter Spheremesh = new MeshFilter();
-    
-    //Mesh Spawn()
-    //{
-    //    Mesh mesh = new Mesh();
-    //    Sphere
-    //}
+ 
 }
